@@ -1,3 +1,4 @@
 # ical_sunrise_sunset
 
-I threw this together for very small personal use project in late 2009. I updated it for different versions of PHP, then in 2022 to add 12 hour time, accessibility fixes, location services, and updated the sunrise / sunset calculations. I only ever add to it and have never cleaned up the code - you get what you pay for. 
+I found the original code at http:\\pdxvr.com\ical_sun.php.  It did almost what I wanted, so a'changing I will go.
+I wanted the output to be a daily event with the times of transit in the description, rather than as individual events during the day.  Also, I wanted to include astronomical, nautical, and civil twilight beginning and end times.  I am considering adding zenith time and length of day.
