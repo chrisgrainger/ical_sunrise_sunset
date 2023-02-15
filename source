@@ -23,17 +23,17 @@ if (@$_POST['end'] == "") {
 	$end = strtotime($_POST["end"]);
 	}
 
-if (@$_POST['rise_off'] == "") {
-	$rise_off = "0";
-	} else {
-	$rise_off = $_POST["rise_off"]*60;
-	}
+//if (@$_POST['rise_off'] == "") {
+//	$rise_off = "0";
+//	} else {
+//	$rise_off = $_POST["rise_off"]*60;
+//	}
 
-if (@$_POST['set_off'] == "") {
-	$set_off = "0";
-	} else {
-	$set_off = $_POST["set_off"]*60;
-	}
+//if (@$_POST['set_off'] == "") {
+//	$set_off = "0";
+//	} else {
+//	$set_off = $_POST["set_off"]*60;
+//	}
 
 if (@$_POST['lat'] == "") {
 	$lat = 44.671539;
@@ -78,6 +78,7 @@ VERSION:1.0\n";
 		echo "DTSTART;VALUE=DATE:" . date("Ymd", $day) . "\n";
 		echo "DTEND;VALUE=DATE:" . date("Ymd", $day) . "\n";
 		echo "DTSTAMP:".date("Ymd",$day)."T".date("His",$day) . "Z\n";
+		echo "DESCRIPTION:";
 		if (isset($_POST['astro'])) {
 			$astro_begin =  date_sun_info($day, $lat, $lon);
 			$real_astro_begin = date("His",$astro_begin[astronomical_twilight_begin]);
@@ -85,10 +86,9 @@ VERSION:1.0\n";
 			$astro_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_astro_begin = date("his",$astro_begin[astronomical_twilight_begin]);
-			echo "Astronomical Twilight Begins: " . substr($offset_astro_begin, 0, 2) . ":" . substr($offset_astro_begin, 2,2) ."am\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nAstronomical Twilight Begins: " . substr($offset_astro_begin, 0, 2) . ":" . substr($offset_astro_begin, 2,2) ."am";
 			} else {
-			echo "Astronomical Twilight Begins: " . substr($offset_astro_begin, 0, 2) . ":" . substr($offset_astro_begin, 2,2) ."am\n";
+			echo "\\nAstronomical Twilight Begins: " . substr($offset_astro_begin, 0, 2) . ":" . substr($offset_astro_begin, 2,2) ."am";
 			}
 		}
 		if (isset($_POST['nautical'])) {
@@ -98,10 +98,9 @@ VERSION:1.0\n";
 			$nautical_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_nautical_begin = date("his",$nautical_begin[nautical_twilight_begin]);
-			echo "Nautical Twilight Begins: " . substr($offset_nautical_begin, 0, 2) . ":" . substr($offset_nautical_begin, 2,2) ."am\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nNautical Twilight Begins: " . substr($offset_nautical_begin, 0, 2) . ":" . substr($offset_nautical_begin, 2,2) ."am";
 			} else {
-			echo "Nautical Twilight Begins: " . substr($offset_nautical_begin, 0, 2) . ":" . substr($offset_nautical_begin, 2,2) ."am\n";
+			echo "\\nNautical Twilight Begins: " . substr($offset_nautical_begin, 0, 2) . ":" . substr($offset_nautical_begin, 2,2) ."am";
 			}
 		}
 		if (isset($_POST['civil'])) {
@@ -111,10 +110,9 @@ VERSION:1.0\n";
 			$civil_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_civil_begin = date("his",$civil_begin[civil_twilight_begin]);
-			echo "Civil Twilight Begins: " . substr($offset_civil_begin, 0, 2) . ":" . substr($offset_civil_begin, 2,2) ."am\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nCivil Twilight Begins: " . substr($offset_civil_begin, 0, 2) . ":" . substr($offset_civil_begin, 2,2) ."am";
 			} else {
-			echo "Civil Twilight Begins: " . substr($offset_civil_begin, 0, 2) . ":" . substr($offset_civil_begin, 2,2) ."am\n";
+			echo "\\nCivil Twilight Begins: " . substr($offset_civil_begin, 0, 2) . ":" . substr($offset_civil_begin, 2,2) ."am";
 			}
 		}
 		if (isset($_POST['sunrise'])) {
@@ -124,10 +122,9 @@ VERSION:1.0\n";
 			$rise_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_sunrise = date("his",$sunrise[sunrise]);
-			echo "Sunrise: " . substr($offset_sunrise, 0, 2) . ":" . substr($offset_sunrise, 2,2) ."am\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nSunrise: " . substr($offset_sunrise, 0, 2) . ":" . substr($offset_sunrise, 2,2) ."am";
 			} else {
-			echo "Sunrise: " . substr($offset_sunrise, 0, 2) . ":" . substr($offset_sunrise, 2,2) ."am\n";
+			echo "\\nSunrise: " . substr($offset_sunrise, 0, 2) . ":" . substr($offset_sunrise, 2,2) ."am";
 			}
 		}
 		if (isset($_POST['sunset'])) {
@@ -137,9 +134,9 @@ VERSION:1.0\n";
 			$set_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_sunset = date("his",$sunset[sunset]);
-			echo "Sunset: " . substr($offset_sunset, 0, 2) . ":" . substr($offset_sunset, 2,2) ."pm\n";
+			echo "\\nSunset: " . substr($offset_sunset, 0, 2) . ":" . substr($offset_sunset, 2,2) ."pm";
 			} else {
-			echo "Sunset: " . substr($offset_sunset, 0, 2) . ":" . substr($offset_sunset, 2,2) ."pm\n";
+			echo "\\nSunset: " . substr($offset_sunset, 0, 2) . ":" . substr($offset_sunset, 2,2) ."pm";
 			}
 		}
 		if (isset($_POST['civil'])) {
@@ -149,10 +146,9 @@ VERSION:1.0\n";
 			$civil_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_civil_end = date("his",$civil_end[civil_twilight_end]);
-			echo "Civil Twilight Ends: " . substr($offset_civil_end, 0, 2) . ":" . substr($offset_civil_end, 2,2) ."pm\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nCivil Twilight Ends: " . substr($offset_civil_end, 0, 2) . ":" . substr($offset_civil_end, 2,2) ."pm";
 			} else {
-			echo "Civil Twilight Ends: " . substr($offset_civil_end, 0, 2) . ":" . substr($offset_civil_end, 2,2) ."pm\n";
+			echo "\\nCivil Twilight Ends: " . substr($offset_civil_end, 0, 2) . ":" . substr($offset_civil_end, 2,2) ."pm";
 			}
 		}
 		if (isset($_POST['nautical'])) {
@@ -162,10 +158,9 @@ VERSION:1.0\n";
 			$nautical_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_nautical_end = date("his",$nautical_end[nautical_twilight_end]);
-			echo "Nautical Twilight Ends: " . substr($offset_nautical_end, 0, 2) . ":" . substr($offset_nautical_end, 2,2) ."pm\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nNautical Twilight Ends: " . substr($offset_nautical_end, 0, 2) . ":" . substr($offset_nautical_end, 2,2) ."pm";
 			} else {
-			echo "Nautical Twilight Ends: " . substr($offset_nautical_end, 0, 2) . ":" . substr($offset_nautical_end, 2,2) ."pm\n";
+			echo "\\nNautical Twilight Ends: " . substr($offset_nautical_end, 0, 2) . ":" . substr($offset_nautical_end, 2,2) ."pm";
 			}
 		}
 		if (isset($_POST['astro'])) {
@@ -175,12 +170,12 @@ VERSION:1.0\n";
 			$astro_day = date("Ymd", $day);
 			if ($twelve == "yes") {
 			$real_astro_end = date("his",$astro_end[astronomical_twilight_end]);
-			echo "Astronomical Twilight Ends: " . substr($offset_astro_end, 0, 2) . ":" . substr($offset_astro_end, 2,2) ."pm\n";
-//			SUMMARY:Sunrise : ".substr($real_sunrise,0,2).":".substr($real_sunrise,2,2)." AM
+			echo "\\nAstronomical Twilight Ends: " . substr($offset_astro_end, 0, 2) . ":" . substr($offset_astro_end, 2,2) ."pm";
 			} else {
-			echo "Astronomical Twilight Ends: " . substr($offset_astro_end, 0, 2) . ":" . substr($offset_astro_end, 2,2) ."pm\n";
+			echo "\\nAstronomical Twilight Ends: " . substr($offset_astro_end, 0, 2) . ":" . substr($offset_astro_end, 2,2) ."pm";
 			}
 		}
+		echo"\n";
 		echo"LAST-MODIFIED:". date("Ymd",$day)."T".date("His",$day) . "Z\n";
 		echo"LOCATION \n";
 		echo"SEQUENCE:0 \n";
@@ -315,7 +310,7 @@ echo "<p>Use the form below to generate an iCal-formatted calendar for your loca
 <br></p>
 <p style=\"color: red;\">NOTE: Before you import the ICS, please check it. It's a lot of hassle to remove a year of individual events.
 <br><br>
-You cannot subscribe to the calendar.  You must come back here annualy or generate multiple years of calendars at a time now.<p>
+You cannot subscribe to the calendar, but you can generate multiple years at a time, or come back her annually to revisit us.<p>
 <span style=\"color: red;\">*</span> = Required for accurate results, location defaults to Westport, Ontario, Canada <a target=\"_blank\" style=\"text-decoration: none;\" href=\"https://maps.google.com/?q=44.671539,-76.362596\">(44.671539, -76.362596)</a>
 <br><br><br>
 
@@ -386,7 +381,9 @@ Enter Description Here :
 
 ";
 ?>
+<!--
 <script>alert("\nI disabled subscriptions.\n\nPlease download an ICS file as needed.");</script>
+-->
 <script>
 let myapp =  {
   x: document.getElementById("getGeo"),
@@ -423,14 +420,16 @@ echo "
 
 <h2>NOTES</h2>
 <span style=\"line-height: 22px;\">
-I wrote this in late 2009, updated it for different versions of PHP, then in 2022 to add 12 hour time, accessibility fixes, location services, and updated the sunrise / sunset calculations.  I do NOT do anything with your location.  It's only passed back to this form where it's used to calculate the events. 
+While looking for a way to add sunrise, sunset, etc data to a calendar, I came across <a href=\"https://pdxvr.com\ical_sun.php\" target=\"_blank\">this method at pdxvr.com</a>.  Although it did not format the .ics file exactly the way I was looking for, the freely available source code was an excellent starting point for my.... rudimentary coding skills.  I've left the link in to buy the original author a coffee if you so wish.  The link to the source code will take you to the code I'm using to present this particular page, and not the original source.  If you want that, hit the link to the <a href=\"https://pdxvr.com\ical_sun.php\" target=\"_blank\">original author's page</a>.
+<br><br>
+Once the form is filled in, you will receive a formatted iCalendar file containing a daily event for each date chosen.  You can choose and date range up to 365 days.  If you do not choose a start or end date, the page defaults to starting today and ending 365 days from today.  The event can contain times for sunrise, sunset, civil twilight, nautical twilight, and astronomical twilight - all of these are configurable, but please choose at least one option, otherwise you'll get a daily event with no data in the event.
 <br><br>
 DAYLIGHT SAVING TIME:<br>
 PHP appears to have DST built in but you must select the correct time zone. America/Phoenix, won't give you DST because Arizona doesn't do DST.
 <br><br>
-<strong>Problems or questions</strong> - <a href=\"https://finch.red/contact\" target=\"_blank\">contact me</a> or <a href=\"https://paypal.me/crowdotblack?country.x=US&locale.x=en_US\" target=\"_blank\">buy me a coffee</a>
+<strong><a href=\"https://paypal.me/crowdotblack?country.x=US&locale.x=en_US\" target=\"_blank\">Buy the original author a coffee</a>
 <br><br>
-<a href=\"https://github.com/pdxvr/ical_sunrise_sunset/blob/main/source\" target=\"_blank\">Source code</a>
+<a href=\"https://github.com/chrisgrainger/ical_sunrise_sunset/blob/main/source\" target=\"_blank\">Source code</a>
 </span><br>
 </body>
 </html>";
