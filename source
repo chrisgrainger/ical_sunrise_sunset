@@ -3,6 +3,455 @@ error_reporting(0);
 
 //putenv("GMT");
 //putenv("TZ=America/Los_Angeles");
+putenv ("TZ=UTC");
+$last_modified = date("Ymd") . "T" . date("His") . "Z";
+
+if (!isset($_POST['zone'])) {
+	putenv("TZ=US/Eastern");
+	date_default_timezone_set('America/Toronto');
+	} else {
+	putenv("TZ=".$_POST["zone"]."");
+	date_default_timezone_set("".$_POST["zone"]."");
+	}
+
+if (@$_POST['start'] == "") {
+	$start = strtotime("Today");
+	} else {
+	$start = strtotime($_POST["start"]);
+	}
+
+if (@$_POST['end'] == "") {
+	$end = $start + 31449600;
+	} else {
+	$end = strtotime($_POST["end"]);
+	}
+
+//if (@$_POST['rise_off'] == "") {
+//	$rise_off = "0";
+//	} else {
+//	$rise_off = $_POST["rise_off"]*60;
+//	}
+
+//if (@$_POST['set_off'] == "") {
+//	$set_off = "0";
+//	} else {
+//	$set_off = $_POST["set_off"]*60;
+//	}
+
+if (@$_POST['lat'] == "") {
+	$lat = 44.664063;
+	} else {
+	$lat = $_POST["lat"];
+	}
+
+if (@$_POST['lon'] == "") {
+	$lon = -76.3956659;
+	} else {
+	$lon = $_POST["lon"];
+	}
+
+if (@$_POST['twelve'] == "") {
+	$twelve = "";
+	} else {
+	$twelve = "yes";
+	}
+
+//if (@$_POST['description'] == "") {
+//	$description = "";
+//	} else {
+//	$description = str_replace(array("\r\n", "\r", "\n"), "", stripslashes($_POST["description"]));
+//	}
+
+if (isset($_POST["submit"])) {	
+	//header("Content-type: text/plain");
+	header('Content-Type: text/calendar; charset=utf-8');
+	header('Content-Disposition: attachment; filename="cheep-o_sun_data.ics"');
+	
+echo "BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+PRODID:-//Cheep-o Software by Exception #13//iCal 1.0//EN
+X-WR-CALNAME;VALUE=TEXT:Sun Transit Times for $lat,$lon
+VERSION:1.0\n";
+	$i = 0;
+	$day = $start;
+	while ($day <= $end ) {
+	if ($i <= 365) {
+		echo "BEGIN:VEVENT\n";
+		echo "DTSTART;VALUE=DATE:" . date("Ymd", $day) . "\n";
+		echo "DTEND;VALUE=DATE:" . date("Ymd", $day) . "\n";
+		echo "DTSTAMP:". $last_modified . "\n";
+		echo "DESCRIPTION:";
+		if (isset($_POST['astro'])) {
+			$astro_begin =  date_sun_info($day, $lat, $lon);
+			$real_astro_begin = date("Hi",$astro_begin[astronomical_twilight_begin]);
+//			$offset_astro_begin = date("His",$astro_begin[astronomical_twilight_begin]+$rise_off);
+//			$astro_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_astro_begin = date("g:ia",$astro_begin[astronomical_twilight_begin]);
+			echo "\\n" . $real_astro_begin . " - Astronomical Twilight Begins ";
+			} else {
+			echo "\\n" . $real_astro_begin ."- Astronomical Twilight Begins ";
+			}
+		}
+		if (isset($_POST['nautical'])) {
+			$nautical_begin =  date_sun_info($day, $lat, $lon);
+			$real_nautical_begin = date("Hi",$nautical_begin[nautical_twilight_begin]);
+//			$offset_nautical_begin = date("His",$nautical_begin[nautical_twilight_begin]+$rise_off);
+//			$nautical_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_nautical_begin = date("g:ia",$nautical_begin[nautical_twilight_begin]);
+			echo "\\n" . $real_nautical_begin . " - Nautical Twilight Begins ";
+			} else {
+			echo "\\n" . $real_nautical_begin . " - Nautical Twilight Begins ";
+			}
+		}
+		if (isset($_POST['civil'])) {
+			$civil_begin =  date_sun_info($day, $lat, $lon);
+			$real_civil_begin = date("Hi",$civil_begin[civil_twilight_begin]);
+//			$offset_civil_begin = date("His",$civil_begin[civil_twilight_begin]+$rise_off);
+//			$civil_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_civil_begin = date("g:ia",$civil_begin[civil_twilight_begin]);
+			echo "\\n" . $real_civil_begin . " - Civil Twilight Begins ";
+			} else {
+			echo "\\n" . $real_civil_begin . " - Civil Twilight Begins ";
+			}
+		}
+		if (isset($_POST['sunrise'])) {
+			$sunrise =  date_sun_info($day, $lat, $lon);
+			$real_sunrise = date("Hi",$sunrise[sunrise]);
+//			$offset_sunrise = date("His",$sunrise[sunrise]+$rise_off);
+//			$rise_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_sunrise = date("g:ia",$sunrise[sunrise]);
+			echo "\\n" . $real_sunrise . " - Sunrise ";
+			} else {
+			echo "\\n" . $real_sunrise . " - Sunrise ";
+			}
+		}
+		if (isset($_POST['sunset'])) {
+			$sunset =  date_sun_info($day, $lat, $lon);
+			$real_sunset = date("Hi",$sunset[sunset]);
+//			$offset_sunset = date("His",$sunset[sunset]+$set_off);
+//			$set_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_sunset = date("g:ia",$sunset[sunset]);
+			echo "\\n" . $real_sunset . " - Sunset ";
+			} else {
+			echo "\\n" . $real_sunset . " - Sunset ";
+			}
+		}
+		if (isset($_POST['civil'])) {
+			$civil_end =  date_sun_info($day, $lat, $lon);
+			$real_civil_end = date("Hi",$civil_end[civil_twilight_end]);
+//			$offset_civil_end = date("His",$civil_end[civil_twilight_end]+$rise_off);
+//			$civil_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_civil_end = date("g:ia",$civil_end[civil_twilight_end]);
+			echo "\\n" . $real_civil_end . " - Civil Twilight Ends ";
+			} else {
+			echo "\\n" . $real_civil_end . " - Civil Twilight Ends ";
+			}
+		}
+		if (isset($_POST['nautical'])) {
+			$nautical_end =  date_sun_info($day, $lat, $lon);
+			$real_nautical_end = date("Hi",$nautical_end[nautical_twilight_end]);
+//			$offset_nautical_end = date("His",$nautical_end[nautical_twilight_end]+$rise_off);
+//			$nautical_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_nautical_end = date("g:ia",$nautical_end[nautical_twilight_end]);
+			echo "\\n" . $real_nautical_end . " - Nautical Twilight Ends ";
+			} else {
+			echo "\\n" . $real_nautical_end . " - Nautical Twilight Ends ";
+			}
+		}
+		if (isset($_POST['astro'])) {
+			$astro_end =  date_sun_info($day, $lat, $lon);
+			$real_astro_end = date("Hi",$astro_end[astronomical_twilight_end]);
+//			$offset_astro_end = date("Hi",$astro_end[astronomical_twilight_end]+$rise_off);
+//			$astro_day = date("Ymd", $day);
+			if ($twelve == "yes") {
+			$real_astro_end = date("g:ia",$astro_end[astronomical_twilight_end]);
+			echo "\\n" . $real_astro_end . " - Astronomical Twilight Ends ";
+			} else {
+			echo "\\n" . $real_astro_end ." - Astronomical Twilight Ends ";
+			}
+		}
+		echo"\n";
+		echo"LAST-MODIFIED:". $last_modified . "\n";
+		echo"LOCATION \n";
+		echo"SEQUENCE:0 \n";
+		echo"STATUS:CONFIRMED \n";
+		if ($twelve == "yes") {
+			echo"SUMMARY:Sunrise : " . date("g:ia",$sunrise[sunrise]) . "\, Sunset : " . date("g:ia",$sunset[sunset]) . "\n";
+		} else {
+		echo"SUMMARY:Sunrise : " . date("Hi",$sunrise[sunrise]) . "\, Sunset : " . date("Hi",$sunset[sunset]) . "\n";
+		}
+		echo"TRANSP:OPAQUE \n";	
+		echo"URL:http://sundata.rideauwx.info/\n";
+		echo"END:VEVENT\n";
+	
+		$day = mktime(0,0,0,date("m", $day),date("d", $day)+1,date("Y", $day));
+	}
+	$i++;
+	}
+	echo "END:VCALENDAR";
+
+} else {
+
+putenv("TZ-America/Toronto");
+$sunrise =  date_sun_info(strtotime("Today"), $lat, $lon);
+$sunset =  date_sun_info(strtotime("Today"), $lat, $lon);
+$sunrise[sunrise];
+$sunset[sunset];
+echo "<!doctype html>
+<html lang=\"en\">
+<head>
+<meta charset=\"utf-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"><title>Sun Transit Times iCal Generator</title>
+<style>
+body {
+	font-size: 16px;
+	font-family: Courier new, Courier, monospace;
+	font-weight: bold;
+}
+
+input, select, textarea {
+	font-size: 20px;
+	font-family: Courier new, Courier, monospace;
+	font-weight: bold;
+	padding: 8px;
+	margin: 5px 0;
+}
+input[type=checkbox] {
+	transform: scale(2);
+}
+.check {
+	border: 1px solid #ccc;
+	margin-left: 10px;
+}
+input[type=submit] {
+	-webkit-appearance: none;
+	border-radius: 5px;
+	font-size: 22px;
+}
+button {
+	-webkit-appearance: none;
+	border-radius: 5px;
+	font-size: 22px;
+	padding: 20px;
+	font-family: Courier new, Courier, monospace;
+	font-weight: bold;
+}
+
+.select {
+	border-radius: 5px;
+}
+
+.cboxl {
+
+}
+.cboxr {
+margin: -21px 0 0 30px;
+}
+
+
+@media screen and (max-width:1400px) {
+	body {
+		font-size: 22px;
+		max-width: 100%;
+	}
+
+	input, select, textarea {
+	font-size: 22px;
+	font-family: Courier;
+	font-weight: bold;
+	padding: 20px;
+	margin: 5px 0;
+	width: 100%;
+}
+	input[type=checkbox] {
+		transform: scale(.7);
+		width: 20px;
+}
+button {
+	-webkit-appearance: none;
+	border-radius: 5px;
+	font-size: 22px;
+	padding: 20px;
+	font-family: Courier new, Courier, monospace;
+	font-weight: bold;
+	width: 100%;
+}
+
+.check {
+	border: 1px solid #ccc;
+	margin-left: 0px;
+}
+
+.cboxr {
+margin: -40px 0 0 35px;
+}
+
+}
+</style>
+
+";
+?>
+</head>
+
+
+<?php
+echo "<body style=\"padding: 20px; margin: 0;\"><h1>Free Sunrise, Sunset, & Twilight Time iCal Generator</h1>
+
+<b>Local Information - Westport, Ontario - Eastern Standard (US/Eastern)</b>
+<br>
+This script was last updated on ".date('d M, Y', getlastmod())."<br>
+Today&nbsp;&nbsp;&nbsp;-&nbsp;".date('d M Y', strtotime("Today"))."
+<br>
+Sunrise -&nbsp;".date('H:i', $sunrise[sunrise])."<br>
+Sunset&nbsp;&nbsp;-&nbsp;".date('H:i', $sunset[sunset])."
+<hr>";
+
+echo "<p>Use the form below to generate an iCal-formatted calendar for your location.<br>
+<br></p>
+<p style=\"color: red;\">NOTE: Before you import the ICS, please check it. It's a lot of hassle to remove a year of individual events.
+<br><br>
+You cannot subscribe to the calendar, but you can generate multiple years at a time, or come back her annually to revisit us.<p>
+<span style=\"color: red;\">*</span> = Required for accurate results, location defaults to Westport, Ontario, Canada <a target=\"_blank\" style=\"text-decoration: none;\" href=\"https://maps.google.com/?q=44.664063,-76.3956659\">(44.664063, -76.3956659)</a>
+<br><br><br>
+
+
+<button onclick=\"getLocation()\">Get Geo Location</button>
+<p id=\"getGeo\">&nbsp;</p>
+<form method=\"post\">
+latitude (decimal i.e. 44.664063)<br><input type=\"text\" name=\"lat\" id=\"lat\" ><span style=\"color: red;\"> *</span>
+<br><hr><br>
+longitude (decimal - don't forget the minus sign if in the west)<br><input type=\"text\" name=\"lon\" id=\"lon\" ><span style=\"color: red;\"> *</span>
+<br><hr><br>
+start date (MM/DD/YYYY) defaults to today<br><input type=\"text\" name=\"start\" >
+<br><hr><br>
+end date (MM/DD/YYYY) defaults to one year from today (maximum 365 days)<br><input type=\"text\" name=\"end\" >
+<br><hr><br>
+<!--
+sunrise offset in minutes (use \"+15\" or \"-15\" for example)<br><input type=\"text\" name=\"rise_off\" >
+<br><hr><br>
+sunset offset in minutes (use \"+15\" or \"-15)\" for example
+<br><input type=\"text\" name=\"set_off\" >
+<br><hr><br>
+-->
+<select class=\"select\" name=\"zone\">";
+$zone = timezone_identifiers_list();
+echo "<option>America/Toronto</option>";
+foreach ($zone as $key => $value) {
+	echo "<option>$value</option>";
+}
+
+
+echo "
+</select><span style=\"color: red;\"> *</span>&nbsp;&nbsp;<b>important</b> - your timezone<br>
+<br><hr><br>
+
+<span style=\"color: red;\">check one or all of the boxes below</span>
+<br>
+<br>
+<div class=\"cboxl\"><input type=\"checkbox\" class=\"check\" name=\"sunrise\" id=\"sunrise\"></div><div class=\"cboxr\"><label for=\"sunrise\">&nbsp;generate sunrise times</label></div>
+<br>
+<br>
+<div class=\"cboxl\"><input type=\"checkbox\" class=\"check\" name=\"sunset\" id=\"sunset\"></div><div class=\"cboxr\"><label for=\"sunset\">&nbsp;generate sunset times</label></div>
+<br>
+<br>
+<div class=\"cboxl\"><input type=\"checkbox\" class=\"check\" name=\"astro\" id=\"astro\"></div><div class=\"cboxr\"><label for=\"astro\">&nbsp;generate astronomical twilight times</label></div>
+<br>
+<br>
+<div class=\"cboxl\"><input type=\"checkbox\" class=\"check\" name=\"nautical\" id=\"nautical\"></div><div class=\"cboxr\"><label for=\"nautical\">&nbsp;generate nautical twilight times</label></div>
+<br>
+<br>
+<div class=\"cboxl\"><input type=\"checkbox\" class=\"check\" name=\"civil\" id=\"civil\"></div><div class=\"cboxr\"><label for=\"civil\">&nbsp;generate civil twilight times</label></div>
+<br>
+
+<hr>
+<br>
+<div class=\"cboxl\"><input type=\"checkbox\" class=\"check\" name=\"twelve\" id=\"twelve\"></div><div class=\"cboxr\"><label for=\"twelve\">&nbsp;use 12 hour times (AM/PM)</label></div>
+<br>
+<br>
+<!--
+<br>
+<input type=\"checkbox\" name=\"dst\"/> check this to automatically remove the default US daylight savings time adjustment<br>
+-->
+<hr>
+<br>
+<!--
+Enter Description Here :
+<br>
+<textarea style=\"width: 100%; height: 200px;\" name=\"description\">
+-->
+</textarea><input type=\"submit\" name=\"submit\" style=\"padding: 20px; font-family: Courier new, Courier, monospace\" value=\"Submit\" >
+
+</form>
+
+";
+?>
+<!--
+<script>alert("\nI disabled subscriptions.\n\nPlease download an ICS file as needed.");</script>
+-->
+<script>
+let myapp =  {
+  x: document.getElementById("getGeo"),
+  lat: document.getElementById("lat"),
+  lon: document.getElementById("lon"),
+};
+
+function getLocation() {
+  myapp.x.innerHTML = '&nbsp;';
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, showError);
+  } else {
+    "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+//  myapp.x.innerHTML = "Latitude: " + position.coords.latitude +
+//    "<br>Longitude: " + position.coords.longitude;
+  myapp.lat.value = Math.round(position.coords.latitude * 100) / 100;
+  myapp.lon.value = Math.round(position.coords.longitude * 100) / 100;
+  
+}
+
+function showError(error) {
+  myapp.lat.value = "";
+  myapp.lon.value = "";
+  myapp.x.innerHTML = "<br>Error message: " + error.message;
+}
+</script>
+
+<?php
+echo "
+
+<h2>NOTES</h2>
+<span style=\"line-height: 22px;\">
+While looking for a way to add sunrise, sunset, etc data to a calendar, I came across <a href=\"https://pdxvr.com\ical_sun.php\" target=\"_blank\">this method at pdxvr.com</a>.  Although it did not format the .ics file exactly the way I was looking for, the freely available source code was an excellent starting point for my.... rudimentary coding skills.  I've left the link in to buy the original author a coffee if you so wish.  The link to the source code will take you to the code I'm using to present this particular page, and not the original source.  If you want that, hit the link to the <a href=\"https://pdxvr.com\ical_sun.php\" target=\"_blank\">original author's page</a>.
+<br><br>
+Once the form is filled in, you will receive a formatted iCalendar file containing a daily event for each date chosen.  You can choose and date range up to 365 days.  If you do not choose a start or end date, the page defaults to starting today and ending 365 days from today.  The event can contain times for sunrise, sunset, civil twilight, nautical twilight, and astronomical twilight - all of these are configurable, but please choose at least one option, otherwise you'll get a daily event with no data in the event.
+<br><br>
+DAYLIGHT SAVING TIME:<br>
+PHP appears to have DST built in but you must select the correct time zone. America/Phoenix, won't give you DST because Arizona doesn't do DST.
+<br><br>
+<strong><a href=\"https://paypal.me/crowdotblack?country.x=US&locale.x=en_US\" target=\"_blank\">Buy the original author a coffee</a>
+<br><br>
+<a href=\"https://github.com/chrisgrainger/ical_sunrise_sunset/blob/main/source\" target=\"_blank\">Source code</a>
+</span><br>
+</body>
+</html>";
+}
+?>
+<?php
+error_reporting(0);
+
+//putenv("GMT");
+//putenv("TZ=America/Los_Angeles");
 if (!isset($_POST['zone'])) {
 	putenv("TZ=US/Pacific");
 	date_default_timezone_set('America/Los_Angeles');
